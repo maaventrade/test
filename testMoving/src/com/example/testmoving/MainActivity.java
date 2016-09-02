@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				surfaceViewScreen.startMoving();
+				surfaceViewScreen.start();
 			}});
 		
 	} 

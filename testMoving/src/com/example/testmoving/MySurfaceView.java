@@ -13,9 +13,7 @@ import android.view.SurfaceView;
 import android.os.*;
 
 public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callback {
-
 	private Item[] mItems;
-	private Court court;
 	
 	Context mContext;
 	
@@ -28,12 +26,13 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	private void init() {
 		mItems = new Item[]{ new Item(mContext)};
 		
-		court = new Court(100, 100, 4);
+		Court.init(100, 100, 4);
 
-		
-		handler.postDelayed(updateTimeTask, 10);
-		
 		getHolder().addCallback(this);
+	}
+	
+	public void start() {
+		handler.postDelayed(updateTimeTask, 10);
 	}
 
 	private Runnable updateTimeTask = new Runnable() { 
@@ -62,11 +61,9 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 		
 		canvas.drawColor(Color.BLACK);
 		
-		court.draw(canvas);
+		Court.draw(canvas);
 		
 		synchronized (mItems) {
-			//for (Item i : mItems)
-			//	i.calc();
 			for (Item i : mItems)
 				i.draw(canvas);
 		}
@@ -119,10 +116,6 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-	}
-
-	public void startMoving() {
-		//calcThread.start();
 	}
 
 }
