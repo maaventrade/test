@@ -1,17 +1,14 @@
 package com.example.testmoving;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
+import android.util.*;
 
 public class Court {
 	private static int rect[][];
 	
-	private static int sizeX = 100;
-	private static int sizeY = 100;
+	private static final int SIZE = 100;
+	private static int sizeX = SIZE;
+	private static int sizeY = SIZE;
 	
 	private static int left = 100;
 	private static int top = 100;
@@ -24,6 +21,26 @@ public class Court {
 	
 	private static int yCol = -1;
 	private static int xCol = -1;
+
+	public static int getLeft()
+	{
+		return left;
+	}
+
+	public static int getTop()
+	{
+		return top;
+	}
+
+	public static int getK()
+	{
+		return k;
+	}
+	
+	public static int getRadius()
+	{
+		return SIZE / 2;
+	}
 	
 	public static void init(int pleft, int ptop, int pk){
 		left = pleft;
@@ -67,10 +84,11 @@ public class Court {
 	}
 
 	public static float getSin() {
-		return (yCol)/(float)radius;
+		//Log.d("", "ycol "+yCol);
+		return (radius - yCol)/(float)radius;
 	}
 	
 	public static float getCos() {
-		return (xCol - xCenter)/(float)radius;
+		return (xCol - radius)/(float)radius;
 	}
 }

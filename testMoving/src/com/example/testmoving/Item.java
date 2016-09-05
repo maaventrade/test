@@ -9,33 +9,54 @@ import android.graphics.Paint;
 import android.util.Log;
 
 public class Item {
-	private int left = 100;
-	private int top = 100;
-	private int k = 4;
 
-	private float x = 50;
-	private float y = 50;
+	private float x;
+	private float y;
 
-	private int xInt = 50;
-	private int yInt = 50;
+	private int xInt;
+	private int yInt;
 
 	private int rect[][];
 
-	private int sizeX = 10;
-	private int sizeY = 10;
+	private final int SIZE = 11;
+	private int sizeX = SIZE;
+	private int sizeY = SIZE;
 
-	private float vy = 0.2f;
-	private float vx = -0.2f;
+	private float vy;
+	private float vx;
 
 	private Bitmap bitmap;
 
 	public Item(Context context) {
 		bitmap = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.ic_launcher);
-
-		rect = new int[10][10];
-		for (int i = 0; i < 10; i++)
-			for (int j = 0; j < 10; j++)
+		
+		vx = 0.5f - (float)Math.random();
+		vy = 0.5f - (float)Math.random();
+		
+		//x = (float) Math.random() * 100;
+		//y = (float) Math.random() * 100;
+		/*while (){
+			x = (float) Math.random() * 100;
+			y = (float) Math.random() * 100;
+		}
+		*/
+		
+		int r = (int) (Math.random() * (Court.getRadius() - SIZE/2 - 1));
+		int angle = (int) (Math.random() * 360);
+		
+		Log.d("", "r "+r);
+		Log.d("", "an "+angle);
+		
+		x = (float)(r * Math.cos(angle) + Court.getRadius() - SIZE/2 - 1);
+		y = (float)(r * Math.sin(angle) + Court.getRadius() - SIZE/2 - 1);
+		
+		xInt = (int) x;
+		yInt = (int) y;
+		 
+		rect = new int[SIZE][SIZE];
+		for (int i = 0; i < SIZE; i++)
+			for (int j = 0; j < SIZE; j++)
 				rect[i][j] = 1;
 
 	}
@@ -83,6 +104,10 @@ public class Item {
 			float sinNA = Court.getSin();
 			float cosNA = Court.getCos();
 			
+			//Log.d("", "sin "+sinNA);
+			//Log.d("", "cos "+cosNA);
+			
+			
 			float nSpeed = vx * cosNA - vy * sinNA; 
 			float tSpeed = vx * sinNA + vy * cosNA; 
 			
@@ -101,11 +126,15 @@ public class Item {
 		Paint paint = new Paint();
 		paint.setColor(Color.WHITE);
 
-		for (int i = 0; i < 10; i++)
-			for (int j = 0; j < 10; j++)
+		int left = Court.getLeft();
+		int top = Court.getTop();
+		int k = Court.getK();
+		
+		for (int i = 0; i < SIZE; i++)
+			for (int j = 0; j < SIZE; j++)
 				if (rect[i][j] == 1)
-					canvas.drawPoint(i * k + left + xInt * k, j * k + top
-							+ yInt * k, paint);
+					canvas.drawPoint(i * k + left + x * k, j * k + top
+							+ y * k, paint);
 
 		// canvas.drawBitmap(bitmap, x, y, null);
 	}

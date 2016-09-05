@@ -24,8 +24,16 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	private Handler handler = new Handler();
 	
 	private void init() {
-		mItems = new Item[]{ new Item(mContext)};
+		/*mItems = new Item[]{ new Item(mContext), 
+			new Item(mContext), 
+			new Item(mContext), 
+			new Item(mContext), 
+			new Item(mContext), 
+			new Item(mContext)};
+		*/
 		
+		mItems = new Item[]{ new Item(mContext), 
+			new Item(mContext)};
 		Court.init(100, 100, 4);
 
 		getHolder().addCallback(this);
