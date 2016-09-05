@@ -22,6 +22,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				//surfaceViewScreen.init();
 				surfaceViewScreen.start();
 			}});
 		

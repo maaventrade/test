@@ -1,5 +1,6 @@
 package com.example.testmoving;
 
+import android.content.Context;
 import android.graphics.*;
 import android.util.*;
 
@@ -68,6 +69,9 @@ public class Court {
 			for (int j = 0; j < 100; j++)
 				if (rect[i][j] == 1)
 					canvas.drawPoint(i*k + left, j*k + top, paint);
+		
+		canvas.drawLine(left, top, left + SIZE * k, top + SIZE * k, paint);
+		canvas.drawLine(left, top + SIZE * k, left + SIZE * k, top, paint);
 	}
 
 	public static boolean isOn(int x, int y) {
@@ -84,11 +88,13 @@ public class Court {
 	}
 
 	public static float getSin() {
-		//Log.d("", "ycol "+yCol);
 		return (radius - yCol)/(float)radius;
 	}
 	
 	public static float getCos() {
 		return (xCol - radius)/(float)radius;
 	}
+
+	
+
 }

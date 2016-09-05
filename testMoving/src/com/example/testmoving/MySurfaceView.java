@@ -23,17 +23,14 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	
 	private Handler handler = new Handler();
 	
-	private void init() {
-		/*mItems = new Item[]{ new Item(mContext), 
-			new Item(mContext), 
-			new Item(mContext), 
-			new Item(mContext), 
-			new Item(mContext), 
-			new Item(mContext)};
-		*/
+	void init() {
+		mItems = new Item[6];
 		
-		mItems = new Item[]{ new Item(mContext), 
-			new Item(mContext)};
+		for (int i = 0; i < 6; i++)
+			mItems[i] = new Item(mContext, mItems, i); 
+		
+		
+		//mItems = new Item[]{ new Item(mContext)};
 		Court.init(100, 100, 4);
 
 		getHolder().addCallback(this);
@@ -46,7 +43,8 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	private Runnable updateTimeTask = new Runnable() { 
 		public void run() { 
 			for (Item i : mItems)
-				i.calc();
+				if (i != null)
+					i.calc();
 			handler.postDelayed(this, 5);
 		} 
 	};        
@@ -73,7 +71,8 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 		
 		synchronized (mItems) {
 			for (Item i : mItems)
-				i.draw(canvas);
+				if (i != null)
+					i.draw(canvas);
 		}
 		
 	}

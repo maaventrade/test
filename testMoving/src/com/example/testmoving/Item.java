@@ -1,11 +1,16 @@
 package com.example.testmoving;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.util.Log;
 
 public class Item {
@@ -18,38 +23,46 @@ public class Item {
 
 	private int rect[][];
 
-	private final int SIZE = 11;
-	private int sizeX = SIZE;
-	private int sizeY = SIZE;
+	private final int SIZE = 15;
+	private final int SIZEH = 7;
 
 	private float vy;
 	private float vx;
+	
+	private int index;
+	
+	int N = 0;
 
 	private Bitmap bitmap;
 
-	public Item(Context context) {
+	public Item(Context context, Item items[], int pindex) {
 		bitmap = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.ic_launcher);
 		
-		vx = 0.5f - (float)Math.random();
-		vy = 0.5f - (float)Math.random();
+		vx = (float)Math.random();
+		vy = (float)Math.random();
 		
-		//x = (float) Math.random() * 100;
-		//y = (float) Math.random() * 100;
-		/*while (){
-			x = (float) Math.random() * 100;
-			y = (float) Math.random() * 100;
-		}
-		*/
-		
-		int r = (int) (Math.random() * (Court.getRadius() - SIZE/2 - 1));
-		int angle = (int) (Math.random() * 360);
-		
-		Log.d("", "r "+r);
-		Log.d("", "an "+angle);
-		
-		x = (float)(r * Math.cos(angle) + Court.getRadius() - SIZE/2 - 1);
-		y = (float)(r * Math.sin(angle) + Court.getRadius() - SIZE/2 - 1);
+		while (true) {
+			
+			double m = Math.random(); //0.999f;
+			double m1 = Math.random();
+			//m = 0.99999f;
+			//m1 = 0.8f;
+			//m = 0;
+			
+			Log.d("", "m "+m);
+			Log.d("", "m1 "+m1);
+			
+			int r = (int) (m * Court.getRadius() - Math.hypot(SIZE, SIZE));
+			int angle = (int) (m1 * Math.toRadians(360));
+			
+			x = (float)(r * Math.cos(angle) + Court.getRadius());
+			y = (float)(r * Math.sin(angle) + Court.getRadius());
+			
+			if (! intersectRects(x, y, items))
+				break;
+			
+		};
 		
 		xInt = (int) x;
 		yInt = (int) y;
@@ -58,9 +71,21 @@ public class Item {
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
 				rect[i][j] = 1;
+		
+		index = pindex;
 
 	}
 
+	public boolean intersectRects(float x, float y, Item items[]) {
+		for (Item i: items) 
+			if (i != null){
+				RectF rectNew = new RectF(x , y , x + SIZE , y + SIZE);
+				if (rectNew.intersect(i.getX(), i.getY(), i.getX() + SIZE, i.getY() + SIZE)) return true;
+		}
+			
+		return false;
+	}
+	
 	// Log.d("", "xNew "+xNew+" xInt "+xInt+" dx "+dx);
 
 	public void calc() {
@@ -74,19 +99,20 @@ public class Item {
 		// Log.d("", "dy "+dy);
 
 		boolean on = false;
-
-		for (int i = 0; i < sizeX; i++) {
+		for (int i = 0; i < SIZE; i++) {
 			if (on)
 				break;
 
-			for (int j = 0; j < sizeY; j++) {
+			for (int j = 0; j < SIZE; j++) {
 				// (x+dx, y+dy) is internal point - do nothing
-				if (i + dx >= 0 && i + dx < sizeX && j + dy >= 0
-						&& j + dy < sizeY && rect[i + dx][j + dy] == 1)
+				if (i + dx >= 0 && i + dx < SIZE && j + dy >= 0
+						&& j + dy < SIZE && rect[i + dx][j + dy] == 1)
 					;
 
 				else {
-					on = Court.isOn(xInt + i + dx, yInt + j + dy);
+					on = Court.isOn(
+							xInt + i + dx - SIZEH, 
+							yInt + j + dy - SIZEH);
 					if (on) 
 						break;
 				}
@@ -104,20 +130,33 @@ public class Item {
 			float sinNA = Court.getSin();
 			float cosNA = Court.getCos();
 			
-			//Log.d("", "sin "+sinNA);
-			//Log.d("", "cos "+cosNA);
-			
-			
 			float nSpeed = vx * cosNA - vy * sinNA; 
 			float tSpeed = vx * sinNA + vy * cosNA; 
 			
 			nSpeed = -nSpeed;
 			
-			vx = tSpeed * sinNA + nSpeed * cosNA; 
-			vy = tSpeed * cosNA - nSpeed * sinNA; 
+			// Array of the speed increments 
+			ArrayList<PointF> v = new ArrayList<PointF>();
 			
-			//vx = -vx;
-			//vy = -vy;
+			v.add( new PointF(tSpeed * sinNA + nSpeed * cosNA, 
+							  tSpeed * cosNA - nSpeed * sinNA ));
+			
+			
+			for (int i = 0; i < SIZE; i++) {
+				for (int j = 0; j < SIZE; j++) {
+					// (x+dx, y+dy) is internal point - do nothing
+					if (i + dx >= 0 && i + dx < SIZE && j + dy >= 0
+							&& j + dy < SIZE && rect[i + dx][j + dy] == 1)
+						;
+					else {
+						
+						on = touch(
+								xInt + i + dx - SIZEH, 
+								yInt + j + dy - SIZEH);
+					}
+				}
+			}
+			
 		}
 
 	}
@@ -133,9 +172,21 @@ public class Item {
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
 				if (rect[i][j] == 1)
-					canvas.drawPoint(i * k + left + x * k, j * k + top
-							+ y * k, paint);
+					canvas.drawPoint(
+							i * k + left + (x - SIZEH) * k, 
+							j * k + top + (y - SIZEH) * k, 
+							paint);
 
-		// canvas.drawBitmap(bitmap, x, y, null);
+		paint.setColor(Color.RED);
+		paint.setTextSize(25);
+		canvas.drawText(""+index, left+x*k, top+y*k, paint);
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
 	}
 }
