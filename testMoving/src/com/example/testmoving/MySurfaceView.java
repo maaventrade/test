@@ -26,7 +26,7 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	void init() {
 		mItems = new Item[6];
 		
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 2; i++)
 			mItems[i] = new Item(mContext, mItems, i); 
 		
 		

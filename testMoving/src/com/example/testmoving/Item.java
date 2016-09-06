@@ -34,15 +34,19 @@ public class Item {
 	int N = 0;
 
 	private Bitmap bitmap;
+	
+	Item items[];
 
-	public Item(Context context, Item items[], int pindex) {
+	public Item(Context context, Item pItems[], int pindex) {
 		bitmap = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.ic_launcher);
+		
+		items = pItems;
 		
 		vx = (float)Math.random();
 		vy = (float)Math.random();
 		
-		while (true) {
+		//while (true) {
 			
 			double m = Math.random(); //0.999f;
 			double m1 = Math.random();
@@ -50,8 +54,9 @@ public class Item {
 			//m1 = 0.8f;
 			//m = 0;
 			
-			Log.d("", "m "+m);
-			Log.d("", "m1 "+m1);
+			
+			//Log.d("", "m "+m);
+			//Log.d("", "m1 "+m1);
 			
 			int r = (int) (m * Court.getRadius() - Math.hypot(SIZE, SIZE));
 			int angle = (int) (m1 * Math.toRadians(360));
@@ -59,10 +64,24 @@ public class Item {
 			x = (float)(r * Math.cos(angle) + Court.getRadius());
 			y = (float)(r * Math.sin(angle) + Court.getRadius());
 			
-			if (! intersectRects(x, y, items))
-				break;
+			if (pindex == 0){
+				x = 50;
+				y = 50;
+				vx = 0.1f;
+				vy = 0;
+			}else{
+				x = 65;
+				y = 50;
+				vx = -0.1f;
+				vy = 0;
+			}
 			
-		};
+			
+			
+			//if (! intersectRects(x, y, items))
+				//break;
+			
+		//};
 		
 		xInt = (int) x;
 		yInt = (int) y;
@@ -89,6 +108,11 @@ public class Item {
 	// Log.d("", "xNew "+xNew+" xInt "+xInt+" dx "+dx);
 
 	public void calc() {
+		float sinNA = 0;
+		float cosNA = 0;
+		N++;
+		if (N >= 10) return;
+		
 		float xNew = x + vx;
 		float yNew = y + vy;
 
@@ -100,8 +124,8 @@ public class Item {
 
 		boolean on = false;
 		for (int i = 0; i < SIZE; i++) {
-			if (on)
-				break;
+			//if (on)
+			//	break;
 
 			for (int j = 0; j < SIZE; j++) {
 				// (x+dx, y+dy) is internal point - do nothing
@@ -113,8 +137,38 @@ public class Item {
 					on = Court.isOn(
 							xInt + i + dx - SIZEH, 
 							yInt + j + dy - SIZEH);
-					if (on) 
-						break;
+					if (on){
+						sinNA = Court.getSin();
+						cosNA = Court.getCos();
+						
+
+						float nSpeed = vx * cosNA - vy * sinNA; 
+						float tSpeed = vx * sinNA + vy * cosNA; 
+
+						nSpeed = -nSpeed;
+
+						vx = tSpeed * sinNA + nSpeed * cosNA;
+						vy = tSpeed * cosNA - nSpeed * sinNA;
+						
+					}
+					Log.d(""," "+(xInt + i + dx - SIZEH)+" "+(yInt + j + dy - SIZEH));
+					
+					for (Item t: items){
+						if ( t != this){
+							Log.d("","t "+t.getX()+" "+t.getY());
+							on = t.isOn(
+								xInt + i + dx, 
+								yInt + j + dy);
+Log.d("","on "+on);
+							if (on){
+								vx = t.vx;
+								vy = t.vy;
+							}
+						}
+					}
+					
+					//if (on) 
+					//	break;
 				}
 			}
 		}
@@ -127,35 +181,6 @@ public class Item {
 			yInt = yInt + dy;
 			
 		} else {
-			float sinNA = Court.getSin();
-			float cosNA = Court.getCos();
-			
-			float nSpeed = vx * cosNA - vy * sinNA; 
-			float tSpeed = vx * sinNA + vy * cosNA; 
-			
-			nSpeed = -nSpeed;
-			
-			// Array of the speed increments 
-			ArrayList<PointF> v = new ArrayList<PointF>();
-			
-			v.add( new PointF(tSpeed * sinNA + nSpeed * cosNA, 
-							  tSpeed * cosNA - nSpeed * sinNA ));
-			
-			
-			for (int i = 0; i < SIZE; i++) {
-				for (int j = 0; j < SIZE; j++) {
-					// (x+dx, y+dy) is internal point - do nothing
-					if (i + dx >= 0 && i + dx < SIZE && j + dy >= 0
-							&& j + dy < SIZE && rect[i + dx][j + dy] == 1)
-						;
-					else {
-						
-						on = touch(
-								xInt + i + dx - SIZEH, 
-								yInt + j + dy - SIZEH);
-					}
-				}
-			}
 			
 		}
 
@@ -189,4 +214,26 @@ public class Item {
 	public float getY() {
 		return y;
 	}
+	
+	
+	public boolean isOn(int x, int y) {
+		if  (x >= 0 && x < SIZE && y >= 0
+			 && y < SIZE && rect[x][y] == 1){
+			
+			return true;
+		} else {
+			
+			return false;
+		}
+	}
+
+/*
+	public static float getSin() {
+		return (radius - yCol)/(float)radius;
+	}
+
+	public static float getCos() {
+		return (xCol - radius)/(float)radius;
+	}
+	*/
 }
