@@ -43,10 +43,10 @@ public class Item {
 		
 		items = pItems;
 		
-		vx = (float)Math.random();
-		vy = (float)Math.random();
+		//vx = (float)Math.random();
+		//vy = (float)Math.random();
 		
-		//while (true) {
+		while (true) {
 			
 			double m = Math.random(); //0.999f;
 			double m1 = Math.random();
@@ -63,25 +63,24 @@ public class Item {
 			
 			x = (float)(r * Math.cos(angle) + Court.getRadius());
 			y = (float)(r * Math.sin(angle) + Court.getRadius());
-			
+			/*
 			if (pindex == 0){
 				x = 50;
 				y = 50;
-				vx = 0.1f;
-				vy = 0;
+				//vx = 0.3f;
+				//vy = 0;
 			}else{
-				x = 65;
+				x = 70;
 				y = 50;
-				vx = -0.1f;
-				vy = 0;
+				//vx = -0.3f;
+				//vy = 0;
 			}
+			*/
 			
+			if (! intersectRects(x, y, items))
+				break;
 			
-			
-			//if (! intersectRects(x, y, items))
-				//break;
-			
-		//};
+		};
 		
 		xInt = (int) x;
 		yInt = (int) y;
@@ -110,22 +109,23 @@ public class Item {
 	public void calc() {
 		float sinNA = 0;
 		float cosNA = 0;
-		N++;
-		if (N >= 10) return;
+		//N++;
+		//if (N >= 10) return;
 		
 		float xNew = x + vx;
 		float yNew = y + vy;
 
-		int dx = (int) (xNew - xInt);
-		int dy = (int) (yNew - yInt);
+		int dx = Math.round(xNew - xInt);
+		int dy = Math.round(yNew - yInt);
 
-		// Log.d("", "dx "+dx);
-		// Log.d("", "dy "+dy);
+		//if (index == 0){
+		//	Log.d("", "dx "+dx+" xNew "+xNew+" xInt "+xInt);
+		//} 
 
 		boolean on = false;
 		for (int i = 0; i < SIZE; i++) {
-			//if (on)
-			//	break;
+			if (on)
+				break;
 
 			for (int j = 0; j < SIZE; j++) {
 				// (x+dx, y+dy) is internal point - do nothing
@@ -141,34 +141,34 @@ public class Item {
 						sinNA = Court.getSin();
 						cosNA = Court.getCos();
 						
-
-						float nSpeed = vx * cosNA - vy * sinNA; 
-						float tSpeed = vx * sinNA + vy * cosNA; 
-
-						nSpeed = -nSpeed;
-
-						vx = tSpeed * sinNA + nSpeed * cosNA;
-						vy = tSpeed * cosNA - nSpeed * sinNA;
-						
+						break;
 					}
-					Log.d(""," "+(xInt + i + dx - SIZEH)+" "+(yInt + j + dy - SIZEH));
-					
+//					Log.d(""," "+(xInt + i + dx - SIZEH)+" "+(yInt + j + dy - SIZEH));
+
 					for (Item t: items){
-						if ( t != this){
-							Log.d("","t "+t.getX()+" "+t.getY());
+						if (t != null && t != this){
+							//Log.d("","t "+t.getX()+" "+t.getY());
 							on = t.isOn(
 								xInt + i + dx, 
 								yInt + j + dy);
-Log.d("","on "+on);
+//Log.d("","on "+on);
 							if (on){
-								vx = t.vx;
-								vy = t.vy;
+								sinNA = t.getSin(xInt + i + dx, yInt + j + dy);
+								cosNA = t.getCos(xInt + i + dx, yInt + j + dy);
+								
+								break;
+								
+								
+								//vx = -vx;
+								//vy = -vy;
+								//return;
 							}
 						}
 					}
 					
-					//if (on) 
-					//	break;
+					if (on) 
+						break;
+					
 				}
 			}
 		}
@@ -181,6 +181,14 @@ Log.d("","on "+on);
 			yInt = yInt + dy;
 			
 		} else {
+
+			float nSpeed = vx * cosNA - vy * sinNA; 
+			float tSpeed = vx * sinNA + vy * cosNA; 
+
+			nSpeed = -nSpeed;
+
+			vx = tSpeed * sinNA + nSpeed * cosNA;
+			vy = tSpeed * cosNA - nSpeed * sinNA;
 			
 		}
 
@@ -194,6 +202,7 @@ Log.d("","on "+on);
 		int top = Court.getTop();
 		int k = Court.getK();
 		
+		/*
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
 				if (rect[i][j] == 1)
@@ -201,7 +210,13 @@ Log.d("","on "+on);
 							i * k + left + (x - SIZEH) * k, 
 							j * k + top + (y - SIZEH) * k, 
 							paint);
-
+		*/					
+		canvas.drawRect(0 * k + left + (x - SIZEH) * k,
+						0 * k + top + (y - SIZEH) * k,
+						SIZE * k + left + (x - SIZEH) * k,
+						SIZE * k + top + (y - SIZEH) * k,
+						paint);
+		
 		paint.setColor(Color.RED);
 		paint.setTextSize(25);
 		canvas.drawText(""+index, left+x*k, top+y*k, paint);
@@ -216,9 +231,10 @@ Log.d("","on "+on);
 	}
 	
 	
-	public boolean isOn(int x, int y) {
-		if  (x >= 0 && x < SIZE && y >= 0
-			 && y < SIZE && rect[x][y] == 1){
+	public boolean isOn(int px, int py) {
+		if  (px - xInt >= 0 && px - xInt < SIZE && 
+			 py - yInt >= 0	&& py - yInt < SIZE && 
+			 rect[px - xInt][py - yInt] == 1){
 			
 			return true;
 		} else {
@@ -227,13 +243,22 @@ Log.d("","on "+on);
 		}
 	}
 
-/*
-	public static float getSin() {
-		return (radius - yCol)/(float)radius;
+
+	public float getSin(int px, int py) {
+		double hip = Math.hypot(px - (xInt+SIZEH), py - (yInt+SIZEH));
+		
+		return (float)((Math.abs(yInt+SIZEH-py))/(float)hip);
 	}
 
-	public static float getCos() {
-		return (xCol - radius)/(float)radius;
+	public float getCos(int px, int py) {
+		double hip = Math.hypot(px - (xInt+SIZEH), py - (yInt+SIZEH));
+		
+		return (float)((Math.abs(xInt+SIZEH-px))/(float)hip);
 	}
-	*/
+
+	public void setVelocity(double gx, double gy) {
+		vx = (float) (vx + gx);
+		vy = (float) (vy + gy);
+	}
+
 }

@@ -1,21 +1,32 @@
 package com.example.testmoving;
 
 import android.app.Activity;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SensorEventListener{
+	SensorManager sensorManager; 
+	double ax, ay, az; // these are the acceleration in x,y and z axis
+	double ax0, ay0;
+	
+	MySurfaceView surfaceViewScreen;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		final MySurfaceView surfaceViewScreen = (MySurfaceView)findViewById(R.id.mySurfaceView);
+		surfaceViewScreen = (MySurfaceView)findViewById(R.id.mySurfaceView);
 		
 		Button button = (Button)findViewById(R.id.button1);
 		button.setOnClickListener(new OnClickListener(){
@@ -23,8 +34,14 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				//surfaceViewScreen.init();
-				surfaceViewScreen.start();
+				//surfaceViewScreen.start();
 			}});
+		
+		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); 
+		sensorManager.registerListener(this, 
+				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 
+				SensorManager.SENSOR_DELAY_NORMAL); //SENSOR_DELAY_GAME 
+		surfaceViewScreen.start();
 		
 	} 
 
@@ -45,5 +62,27 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		if (event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){ 
+			ax=-event.values[0]; 
+			ay=event.values[1]; 
+			az=event.values[2];
+			
+			surfaceViewScreen.setAcceleration(ax-ax0, ay-ay0);
+			
+			ax0 = ax;
+			ay0 = ay;
+			
+		}
+		
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		
 	}
 }
