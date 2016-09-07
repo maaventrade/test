@@ -187,8 +187,8 @@ public class Item {
 
 			nSpeed = -nSpeed;
 
-			vx = tSpeed * sinNA + nSpeed * cosNA;
-			vy = tSpeed * cosNA - nSpeed * sinNA;
+			vx = (tSpeed * sinNA + nSpeed * cosNA) / 2;
+			vy = (tSpeed * cosNA - nSpeed * sinNA) / 2;
 			
 		}
 

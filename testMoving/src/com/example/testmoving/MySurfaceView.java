@@ -126,6 +126,7 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	}
 
 	public void setAcceleration(double gx, double gy) {
+		Court.setAcceleration(gx, gy);
 		for (Item i : mItems)
 			if (i != null)
 				i.setVelocity(gx / 10, gy / 10);

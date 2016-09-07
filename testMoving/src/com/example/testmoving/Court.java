@@ -22,6 +22,15 @@ public class Court {
 	
 	private static int yCol = -1;
 	private static int xCol = -1;
+	
+	private static double mGx = 0;
+	private static double mGy = 0;
+
+	public static void setAcceleration(double gx, double gy)
+	{
+		mGx = gx;
+		mGy = gy;
+	}
 
 	public static int getLeft()
 	{
@@ -72,6 +81,12 @@ public class Court {
 		
 		canvas.drawLine(left, top, left + SIZE * k, top + SIZE * k, paint);
 		canvas.drawLine(left, top + SIZE * k, left + SIZE * k, top, paint);
+		
+		paint.setColor(Color.RED);
+		paint.setTextSize(25);
+		canvas.drawText(""+mGx, left, top, paint);
+		canvas.drawText(""+mGy, left, top+35, paint);
+		
 	}
 
 	public static boolean isOn(int x, int y) {
