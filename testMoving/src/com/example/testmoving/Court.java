@@ -23,13 +23,13 @@ public class Court {
 	private static int yCol = -1;
 	private static int xCol = -1;
 	
-	private static double mGx = 0;
-	private static double mGy = 0;
+	private static float mGx = 0;
+	private static float mGy = 0;
 
 	public static void setAcceleration(double gx, double gy)
 	{
-		mGx = gx;
-		mGy = gy;
+		mGx = (float) gx / 100;
+		mGy = (float) gy / 100;
 	}
 
 	public static int getLeft()
@@ -108,6 +108,15 @@ public class Court {
 	
 	public static float getCos() {
 		return (xCol - radius)/(float)radius;
+	}
+
+	public static float getAccelerationX() {
+		return mGx;
+	}
+
+	public static float getAccelerationY() {
+		// TODO Auto-generated method stub
+		return mGy;
 	}
 
 	

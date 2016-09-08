@@ -26,7 +26,7 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	void init() {
 		mItems = new Item[6];
 		
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 6; i++)
 			mItems[i] = new Item(mContext, mItems, i); 
 		
 		
@@ -127,9 +127,9 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 
 	public void setAcceleration(double gx, double gy) {
 		Court.setAcceleration(gx, gy);
-		for (Item i : mItems)
-			if (i != null)
-				i.setVelocity(gx / 10, gy / 10);
+		//for (Item i : mItems)
+		//	if (i != null)
+		//		i.setVelocity(gx / 10, gy / 10);
 	}
 
 }

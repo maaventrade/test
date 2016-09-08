@@ -1,6 +1,7 @@
 package com.example.testmoving;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity implements SensorEventListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		
 		surfaceViewScreen = (MySurfaceView)findViewById(R.id.mySurfaceView);
 		
@@ -67,11 +69,14 @@ public class MainActivity extends Activity implements SensorEventListener{
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		if (event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){ 
-			ax=-event.values[0]; 
-			ay=event.values[1]; 
-			az=event.values[2];
+			ax = -event.values[0]; 
+			ay = event.values[1]; 
+			az = event.values[2];
+	
+//			Log.d("", ""+" "+ax+" "+ay+" "+az);
 			
-			surfaceViewScreen.setAcceleration(ax-ax0, ay-ay0);
+//			surfaceViewScreen.setAcceleration(ax-ax0, ay-ay0);
+			surfaceViewScreen.setAcceleration(ax, ay);
 			
 			ax0 = ax;
 			ay0 = ay;
