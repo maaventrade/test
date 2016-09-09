@@ -25,8 +25,8 @@ public class Item {
 	private int rect0[][];
 	private int rect[][];
 
-	private final int SIZE = 15;
-	private final int SIZEH = 7;
+	private int SIZE = 15;
+	private int SIZEH = 7;
 
 	private float vy;
 	private float vx;
@@ -51,6 +51,13 @@ public class Item {
 
 		items = pItems;
 
+		//SIZE = (int) (Math.random() * 40 + 10);
+		SIZE = 50;
+		if (SIZE % 2 == 0)
+			SIZE = SIZE + 1;
+		SIZEH = SIZE / 2;
+		
+		
 		// vx = (float)Math.random();
 		// vy = (float)Math.random();
 
@@ -279,7 +286,7 @@ public class Item {
 		paint.setColor(Color.RED);
 		paint.setTextSize(25);
 		// canvas.drawText(""+index, left+x*k, top+y*k, paint);
-		canvas.drawText("" + vx, left + x * k, top + y * k + 20, paint);
+		//canvas.drawText("" + vx, left + x * k, top + y * k + 20, paint);
 		// canvas.drawText(""+vy, left+x*k, top+y*k+40, paint);
 
 	}

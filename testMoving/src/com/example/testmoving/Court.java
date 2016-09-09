@@ -7,18 +7,15 @@ import android.util.*;
 public class Court {
 	private static int rect[][];
 	
-	private static final int SIZE = 100;
+	private static final int SIZE = 200;
+	private static int SIZEH = 100;
+	
 	private static int sizeX = SIZE;
 	private static int sizeY = SIZE;
 	
-	private static int left = 100;
-	private static int top = 100;
-	private static int k = 4;
-
-	private static int radius = 50;
-	
-	private static int yCenter;
-	private static int xCenter;
+	private static int left = 0;
+	private static int top = 0;
+	private static int k = 2;
 	
 	private static int yCol = -1;
 	private static int xCol = -1;
@@ -59,12 +56,9 @@ public class Court {
 		
 		rect = new int[sizeX][sizeY];
 		
-		yCenter = 50; 
-		xCenter = 50; 
-		
-		for (int i = 0; i< 100; i++)
-			for (int j = 0; j < 100; j++)
-				if ( Math.sqrt((i-50)*(i-50) + (j-50)*(j-50)) > 48)
+		for (int i = 0; i< SIZE; i++)
+			for (int j = 0; j < SIZE; j++)
+				if ( Math.sqrt((i-SIZEH)*(i-SIZEH) + (j-SIZEH)*(j-SIZEH)) > SIZEH-2)
 					rect[i][j] = 1;
 				else 
 					rect[i][j] = 0;
@@ -74,8 +68,8 @@ public class Court {
 		Paint paint = new Paint();
 		paint.setColor(Color.YELLOW);
 		
-		for (int i = 0; i < 100; i++)
-			for (int j = 0; j < 100; j++)
+		for (int i = 0; i < SIZE; i++)
+			for (int j = 0; j < SIZE; j++)
 				if (rect[i][j] == 1)
 					canvas.drawPoint(i*k + left, j*k + top, paint);
 		
@@ -103,11 +97,11 @@ public class Court {
 	}
 
 	public static float getSin() {
-		return (radius - yCol)/(float)radius;
+		return (SIZEH - yCol)/(float)SIZEH;
 	}
 	
 	public static float getCos() {
-		return (xCol - radius)/(float)radius;
+		return (xCol - SIZEH)/(float)SIZEH;
 	}
 
 	public static float getAccelerationX() {
