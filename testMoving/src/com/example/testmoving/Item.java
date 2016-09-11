@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
+import android.graphics.*;
 
 public class Item {
 
@@ -30,13 +31,17 @@ public class Item {
 
 	private float vy;
 	private float vx;
-	private float vRot = 0f;
+	private float vRot = 2f;
 
 	private int index;
 
 	int N = 0;
+	
+	float nSpeed1 = 0;
+	float tSpeed1 = 0;
+	
 
-	private Bitmap bitmap;
+	private Bitmap chip, chip0;
 	
 	static class IAngle{
 		static float sin;
@@ -44,18 +49,49 @@ public class Item {
 	}
 
 	Item items[];
+	
+	private void loadBitmap(Context context, int id){
+		Bitmap chip1 =  BitmapFactory.decodeResource(context.getResources(), id);
+
+		//indexChip = (int)(Math.random()*8);
+
+		//chip = Bitmap.createBitmap(chip0, indexChip*chip0.getHeight(), 0, chip0.getHeight()-1, chip0.getHeight()-1 );
+
+		//rectChip = new Rect(0, 0, chip.getWidth(), chip.getHeight());
+
+		chip0 =  Bitmap.createScaledBitmap(chip,
+												  SIZE, SIZE, false);
+		rect0 = new int[SIZE][SIZE];
+		rect = new int[SIZE][SIZE];
+/*
+		for (int i = 0; i < SIZE; i++)
+			for (int j = 0; j < SIZE; j++)
+				if (chip1.getPixel(i, j) != 0)
+			{
+				rect0[i][j] = 1;
+				rect[i][j] = 1;
+			} else {
+				rect0[i][j] = 0;
+				rect[i][j] = 0;
+			}
+		*/
+		
+	}
 
 	public Item(Context context, Item pItems[], int pindex) {
-		bitmap = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.ic_launcher);
-
-		items = pItems;
-
 		//SIZE = (int) (Math.random() * 40 + 10);
 		SIZE = 50;
 		if (SIZE % 2 == 0)
 			SIZE = SIZE + 1;
 		SIZEH = SIZE / 2;
+		
+		loadBitmap(context, R.drawable.g1);
+		//bitmap = BitmapFactory.decodeResource(context.getResources(),
+		//		R.drawable.ic_launcher);
+
+		items = pItems;
+
+		
 		
 		
 		// vx = (float)Math.random();
@@ -91,14 +127,7 @@ public class Item {
 		xInt = (int) x;
 		yInt = (int) y;
 
-		rect0 = new int[SIZE][SIZE];
-		rect = new int[SIZE][SIZE];
-
-		for (int i = 0; i < SIZE; i++)
-			for (int j = 0; j < SIZE; j++) {
-				rect0[i][j] = 1;
-				rect[i][j] = 1;
-			}
+		
 
 		index = pindex;
 
@@ -117,6 +146,7 @@ public class Item {
 	}
 
 	private void rotate() {
+		
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++) {
 				rect[i][j] = 0;
@@ -126,7 +156,7 @@ public class Item {
 
 		if (angle >= 360)
 			angle = 0;
-
+/*
 		double angleRad = Math.toRadians(angle);
 
 		for (int i = -SIZEH; i < SIZEH; i++)
@@ -146,6 +176,12 @@ public class Item {
 				}
 
 			}
+*/
+
+Matrix matrix = new Matrix(); 
+matrix.postRotate(angle);
+chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
+
 
 		if (vRot > 0)
 			vRot = Math.max(vRot - 0.01f, 0);
@@ -239,24 +275,33 @@ public class Item {
 			vx = (float) (vx + Court.getAccelerationX());
 			vy = (float) (vy + Court.getAccelerationY());
 
+			Log.d("","* "+vy);
+			
 		} else {
 
 			float nSpeed = vx * IAngle.cos - vy * IAngle.sin;
 			float tSpeed = vx * IAngle.sin + vy * IAngle.cos;
 
 			nSpeed = -nSpeed;
+			
+			Log.d("",""+nSpeed);
+			
+			
+			nSpeed1 = nSpeed;
+			tSpeed1 = tSpeed;
 
 			vx = (tSpeed * IAngle.sin + nSpeed * IAngle.cos) / 2;
 			vy = (tSpeed * IAngle.cos - nSpeed * IAngle.sin) / 2;
 
-			vRot = vRot + 0.5f * nSpeed;
+			vRot = vRot + 0.3f * nSpeed;
 
 		}
-
+/*
 		if (Math.abs(vx) < 0.01)
 			vx = 0;
 		if (Math.abs(vy) < 0.01)
 			vy = 0;
+			*/
 
 	}
 
@@ -272,13 +317,27 @@ public class Item {
 		 * SIZEH) * k, 0 * k + top + (y - SIZEH) * k, SIZE * k + left + (x -
 		 * SIZEH) * k, SIZE * k + top + (y - SIZEH) * k, paint);
 		 */
+		// canvas.save();
+		//canvas.rotate(angle,
+			//	  (int)(left+(x)*k), (int)(top+(y)*k));
+		
+		canvas.drawBitmap(chip, 
+		new Rect(0,0,chip.getWidth(),chip.getHeight()),
+		new Rect((int)(left+(x-SIZEH)*k), (int)(top+(y-SIZEH)*k),
+			(int)(left+(x+SIZEH)*k), (int)(top+(y+SIZEH)*k)),
+		paint
+		);
+		//canvas.restore();
+		
 		paint.setColor(Color.WHITE);
+		
+		/*
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
 				if (rect[i][j] == 1)
-					canvas.drawPoint(i * k + left + (x - SIZEH) * k, j * k
-							+ top + (y - SIZEH) * k, paint);
-
+					canvas.drawPoint(i * k + left + (x - SIZEH) * k,
+					j * k + top + (y - SIZEH) * k, paint);
+*/
 		// paint.setColor(Color.RED);
 		// paint.setTextSize(25);
 		// canvas.drawText(""+angle, left+x*k, top+y*k, paint);
@@ -286,8 +345,8 @@ public class Item {
 		paint.setColor(Color.RED);
 		paint.setTextSize(25);
 		// canvas.drawText(""+index, left+x*k, top+y*k, paint);
-		//canvas.drawText("" + vx, left + x * k, top + y * k + 20, paint);
-		// canvas.drawText(""+vy, left+x*k, top+y*k+40, paint);
+		//canvas.drawText("" + nSpeed1, left + x * k, top + y * k + 20, paint);
+		//canvas.drawText(""+tSpeed1, left+x*k, top+y*k+40, paint);
 
 	}
 
