@@ -59,7 +59,7 @@ public class Item {
 
 		//rectChip = new Rect(0, 0, chip.getWidth(), chip.getHeight());
 
-		chip0 =  Bitmap.createScaledBitmap(chip,
+		chip0 =  Bitmap.createScaledBitmap(chip1,
 												  SIZE, SIZE, false);
 		rect0 = new int[SIZE][SIZE];
 		rect = new int[SIZE][SIZE];
@@ -85,7 +85,7 @@ public class Item {
 			SIZE = SIZE + 1;
 		SIZEH = SIZE / 2;
 		
-		loadBitmap(context, R.drawable.g1);
+		loadBitmap(context, R.drawable.ic_launcher);
 		//bitmap = BitmapFactory.decodeResource(context.getResources(),
 		//		R.drawable.ic_launcher);
 
@@ -182,11 +182,12 @@ Matrix matrix = new Matrix();
 matrix.postRotate(angle);
 chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
 
-
+/*
 		if (vRot > 0)
 			vRot = Math.max(vRot - 0.01f, 0);
 		else if (vRot < 0)
 			vRot = Math.min(vRot + 0.01f, 0);
+			*/
 	}
 
 	private void copyRect(int from[][], int to[][]) {

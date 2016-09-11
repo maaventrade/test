@@ -25,8 +25,8 @@ public class Court {
 
 	public static void setAcceleration(double gx, double gy)
 	{
-		//mGx = (float) gx / 100;
-		//mGy = (float) gy / 100;
+		mGx = (float) gx / 100;
+		mGy = (float) gy / 100;
 	}
 
 	public static int getLeft()

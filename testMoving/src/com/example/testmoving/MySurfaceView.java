@@ -65,7 +65,7 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 		
 		if (canvas == null) return;
 		
-		canvas.drawColor(Color.BLACK);
+		canvas.drawColor(Color.BLUE);
 		
 		Court.draw(canvas);
 		
