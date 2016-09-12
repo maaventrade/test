@@ -31,7 +31,7 @@ public class Item {
 
 	private float vy;
 	private float vx;
-	private float vRot = 2f;
+	private float vRot = 0f;
 
 	private int index;
 
@@ -41,7 +41,7 @@ public class Item {
 	float tSpeed1 = 0;
 	
 
-	private Bitmap chip, chip0;
+	private Bitmap chip;
 	
 	static class IAngle{
 		static float sin;
@@ -59,39 +59,38 @@ public class Item {
 
 		//rectChip = new Rect(0, 0, chip.getWidth(), chip.getHeight());
 
-		chip0 =  Bitmap.createScaledBitmap(chip1,
-												  SIZE, SIZE, false);
-		rect0 = new int[SIZE][SIZE];
-		rect = new int[SIZE][SIZE];
-/*
-		for (int i = 0; i < SIZE; i++)
-			for (int j = 0; j < SIZE; j++)
-				if (chip1.getPixel(i, j) != 0)
-			{
-				rect0[i][j] = 1;
-				rect[i][j] = 1;
-			} else {
-				rect0[i][j] = 0;
-				rect[i][j] = 0;
-			}
-		*/
+		chip =  Bitmap.createScaledBitmap(chip1,
+				  SIZE, SIZE, false);
+		
 		
 	}
 
-	public Item(Context context, Item pItems[], int pindex) {
-		//SIZE = (int) (Math.random() * 40 + 10);
+	public Item(Context context, Item pItems[], int pindex, int dx, int dy) {
+		SIZE = (int) (Math.random() * 40 + 10);
 		SIZE = 50;
 		if (SIZE % 2 == 0)
 			SIZE = SIZE + 1;
 		SIZEH = SIZE / 2;
 		
-		loadBitmap(context, R.drawable.ic_launcher);
-		//bitmap = BitmapFactory.decodeResource(context.getResources(),
-		//		R.drawable.ic_launcher);
+		loadBitmap(context, R.drawable.g1);
 
 		items = pItems;
 
+		angle = (int) (360* Math.random());
 		
+		rect0 = new int[SIZE][SIZE];
+		rect = new int[SIZE][SIZE];
+
+		for (int i = 0; i < SIZE; i++)
+			for (int j = 0; j < SIZE; j++)
+				if (chip.getPixel(i, j) != 0){
+					rect0[i][j] = 1;
+					rect[i][j] = 1;
+				}
+				else {
+					rect0[i][j] = 0;
+					rect[i][j] = 0;
+				}
 		
 		
 		// vx = (float)Math.random();
@@ -99,8 +98,8 @@ public class Item {
 
 		while (true) {
 
-			double m = Math.random(); // 0.999f;
-			double m1 = Math.random();
+			//double m = Math.random(); // 0.999f;
+			//double m1 = Math.random();
 			// m = 0.99999f;
 			// m1 = 0.8f;
 			// m = 0;
@@ -108,17 +107,19 @@ public class Item {
 			// Log.d("", "m "+m);
 			// Log.d("", "m1 "+m1);
 
-			int r = (int) (m * Court.getRadius() - Math.hypot(SIZE, SIZE));
-			int angle = (int) (m1 * Math.toRadians(360));
+			//int r = (int) (m * Court.getRadius() - Math.hypot(SIZE, SIZE));
+			//int angle = (int) (m1 * Math.toRadians(360));
 
-			x = (float) (r * Math.cos(angle) + Court.getRadius());
-			y = (float) (r * Math.sin(angle) + Court.getRadius());
+			x = Court.getRadius() + dx;
+			y = Court.getRadius() + dy;
+			//x = (float) (r * Math.cos(angle) + Court.getRadius());
+			//y = (float) (r * Math.sin(angle) + Court.getRadius());
 			/*
 			 * if (pindex == 0){ x = 50; y = 50; //vx = 0.3f; //vy = 0; }else{ x
 			 * = 70; y = 50; //vx = -0.3f; //vy = 0; }
 			 */
 
-			if (!intersectRects(x, y, items))
+			//if (!intersectRects(x, y, items))
 				break;
 
 		}
@@ -146,7 +147,6 @@ public class Item {
 	}
 
 	private void rotate() {
-		
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++) {
 				rect[i][j] = 0;
@@ -156,7 +156,7 @@ public class Item {
 
 		if (angle >= 360)
 			angle = 0;
-/*
+
 		double angleRad = Math.toRadians(angle);
 
 		for (int i = -SIZEH; i < SIZEH; i++)
@@ -176,18 +176,26 @@ public class Item {
 				}
 
 			}
-*/
-
-Matrix matrix = new Matrix(); 
-matrix.postRotate(angle);
-chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
 
 /*
+Matrix matrix = new Matrix(); 
+matrix.postRotate(angle);
+chip = Bitmap.createBitmap(chip0, 0, 0, SIZE, SIZE, matrix, false);
+
+for (int i = 0; i < SIZE; i++)
+	for (int j = 0; j < SIZE; j++)
+		if (chip.getPixel(i, j) != 0)
+			rect[i][j] = 1;
+		else 
+			rect[i][j] = 0;
+*/
+
+
 		if (vRot > 0)
 			vRot = Math.max(vRot - 0.01f, 0);
 		else if (vRot < 0)
 			vRot = Math.min(vRot + 0.01f, 0);
-			*/
+			
 	}
 
 	private void copyRect(int from[][], int to[][]) {
@@ -222,6 +230,7 @@ chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
 
 							return true;
 						}
+						
 						for (Item t : items) {
 							if (t != null && t != this) {
 								on = t.isOn(xInt + i + dx, yInt + j + dy);
@@ -234,6 +243,7 @@ chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
 								}
 							}
 						}
+						
 					}
 					if (on)
 						return true;
@@ -256,6 +266,7 @@ chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
 			copyRect(rectSaved, rect);
 			angle = angleSaved;
 			vRot = 0;
+			intersection = false;
 		}
 
 		float xNew = x + vx; //
@@ -285,16 +296,18 @@ chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
 
 			nSpeed = -nSpeed;
 			
-			Log.d("",""+nSpeed);
-			
-			
 			nSpeed1 = nSpeed;
 			tSpeed1 = tSpeed;
 
 			vx = (tSpeed * IAngle.sin + nSpeed * IAngle.cos) / 2;
 			vy = (tSpeed * IAngle.cos - nSpeed * IAngle.sin) / 2;
+			
+			vx = (float) (vx + Court.getAccelerationX());
+			vy = (float) (vy + Court.getAccelerationY());
 
-			vRot = vRot + 0.3f * nSpeed;
+			Log.d("",""+nSpeed+"  vx "+vx+"  vy "+vy);
+			
+			//vRot = vRot + 0.3f * nSpeed;
 
 		}
 /*
@@ -318,9 +331,9 @@ chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
 		 * SIZEH) * k, 0 * k + top + (y - SIZEH) * k, SIZE * k + left + (x -
 		 * SIZEH) * k, SIZE * k + top + (y - SIZEH) * k, paint);
 		 */
-		// canvas.save();
-		//canvas.rotate(angle,
-			//	  (int)(left+(x)*k), (int)(top+(y)*k));
+		canvas.save();
+		canvas.rotate(-angle,
+				  (int)(left+(x)*k), (int)(top+(y)*k));
 		
 		canvas.drawBitmap(chip, 
 		new Rect(0,0,chip.getWidth(),chip.getHeight()),
@@ -328,11 +341,11 @@ chip = Bitmap.createBitmap(chip0, 0, 0, SIZEH, SIZEH, matrix, true);
 			(int)(left+(x+SIZEH)*k), (int)(top+(y+SIZEH)*k)),
 		paint
 		);
-		//canvas.restore();
 		
+		canvas.restore();
+/*		
 		paint.setColor(Color.WHITE);
 		
-		/*
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
 				if (rect[i][j] == 1)

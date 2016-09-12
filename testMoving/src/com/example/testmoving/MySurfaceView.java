@@ -25,14 +25,23 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	
 	void init() {
 		mItems = new Item[6];
-		
-		for (int i = 0; i < 1; i++)
-			mItems[i] = new Item(mContext, mItems, i); 
-		
-		
-		//mItems = new Item[]{ new Item(mContext)};
-		Court.init(0, 0, 2);
 
+		Court.init(0, 0, 2);
+		
+		int x = -50;
+		int y = -75;
+		for (int i = 0; i < 6; i++){
+			mItems[i] = new Item(mContext, mItems, i, x, y);
+			x = x + 50;
+			if (i == 1){
+				x = -75;
+				y = -25;
+			} else if (i == 4){
+				x = -50;
+				y = +25;
+			}
+		}
+		
 		getHolder().addCallback(this);
 	}
 	
