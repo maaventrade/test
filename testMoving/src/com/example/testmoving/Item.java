@@ -34,6 +34,9 @@ public class Item {
 	private float vRot = 0f;
 
 	private int index;
+	
+	private int nX = 0;
+	private int nY = 0;
 
 	int N = 0;
 	
@@ -66,14 +69,40 @@ public class Item {
 	}
 
 	public Item(Context context, Item pItems[], int pindex, int dx, int dy) {
-		SIZE = (int) (Math.random() * 40 + 10);
-		SIZE = 50;
+		SIZE = (int) (Math.random() * 20 + 30);
+		//SIZE = 50;
 		if (SIZE % 2 == 0)
 			SIZE = SIZE + 1;
 		SIZEH = SIZE / 2;
 		
-		loadBitmap(context, R.drawable.g1);
-
+		
+		int n = (int) (Math.random() * 7);
+		switch (n){
+		case 0:
+			loadBitmap(context, R.drawable.g1);
+			break;
+		case 1:
+			loadBitmap(context, R.drawable.g2);
+			break;
+		case 2:
+			loadBitmap(context, R.drawable.g3);
+			break;
+		case 3:
+			loadBitmap(context, R.drawable.g4);
+			break;
+		case 4:
+			loadBitmap(context, R.drawable.g5);
+			break;
+		case 5:
+			loadBitmap(context, R.drawable.g6);
+			break;
+		case 6:
+			loadBitmap(context, R.drawable.g7);
+			break;
+		default:
+			loadBitmap(context, R.drawable.g8);
+		}		
+		
 		items = pItems;
 
 		angle = (int) (360* Math.random());
@@ -289,6 +318,9 @@ for (int i = 0; i < SIZE; i++)
 
 			Log.d("","* "+vy);
 			
+			nX = 0;
+			nY = 0;
+			
 		} else {
 
 			float nSpeed = vx * IAngle.cos - vy * IAngle.sin;
@@ -298,16 +330,31 @@ for (int i = 0; i < SIZE; i++)
 			
 			nSpeed1 = nSpeed;
 			tSpeed1 = tSpeed;
+			
+			nX++;
+			nY++;
+			
+			if (nX > 3){
+				nX = 0;
+			} else {
+				vx = (tSpeed * IAngle.sin + nSpeed * IAngle.cos) / 2;
+				vRot = vRot + 0.3f * nSpeed;
+			}
+			
+			if (nY > 3){
+				nY = 0;
+			} else {
+				vy = (tSpeed * IAngle.cos - nSpeed * IAngle.sin) / 2;
+				vRot = vRot + 0.3f * nSpeed;
+			}
 
-			vx = (tSpeed * IAngle.sin + nSpeed * IAngle.cos) / 2;
-			vy = (tSpeed * IAngle.cos - nSpeed * IAngle.sin) / 2;
 			
 			vx = (float) (vx + Court.getAccelerationX());
 			vy = (float) (vy + Court.getAccelerationY());
 
-			Log.d("",""+nSpeed+"  vx "+vx+"  vy "+vy);
+			//Log.d("",""+nSpeed+"  vx "+vx+"  vy "+vy);
+			Log.d("","x "+x+" y "+y);
 			
-			//vRot = vRot + 0.3f * nSpeed;
 
 		}
 /*
