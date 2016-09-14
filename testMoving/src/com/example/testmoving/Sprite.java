@@ -14,7 +14,7 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.graphics.*;
 
-public class Item {
+public class Sprite {
 
 	private float x;
 	private float y;
@@ -26,8 +26,8 @@ public class Item {
 	private int rect0[][];
 	private int rect[][];
 
-	private int SIZE = 15;
-	private int SIZEH = 7;
+	private int SIZE;
+	private int SIZEH;
 
 	private float vy;
 	private float vx;
@@ -51,7 +51,7 @@ public class Item {
 		static float cos;
 	}
 
-	Item items[];
+	//Sprite items[];
 	
 	private void loadBitmap(Context context, int id){
 		Bitmap chip1 =  BitmapFactory.decodeResource(context.getResources(), id);
@@ -68,7 +68,7 @@ public class Item {
 		
 	}
 
-	public Item(Context context, Item pItems[], int pindex, int dx, int dy) {
+	public Sprite(Context context, int pindex, int dx, int dy) {
 		SIZE = (int) (Math.random() * 20 + 30);
 		//SIZE = 50;
 		if (SIZE % 2 == 0)
@@ -103,7 +103,7 @@ public class Item {
 			loadBitmap(context, R.drawable.g8);
 		}		
 		
-		items = pItems;
+		//items = pItems;
 
 		angle = (int) (360* Math.random());
 		
@@ -139,8 +139,8 @@ public class Item {
 			//int r = (int) (m * Court.getRadius() - Math.hypot(SIZE, SIZE));
 			//int angle = (int) (m1 * Math.toRadians(360));
 
-			x = Court.getRadius() + dx;
-			y = Court.getRadius() + dy;
+			x = Scene.getRadius() + dx;
+			y = Scene.getRadius() + dy;
 			//x = (float) (r * Math.cos(angle) + Court.getRadius());
 			//y = (float) (r * Math.sin(angle) + Court.getRadius());
 			/*
@@ -163,8 +163,8 @@ public class Item {
 
 	}
 
-	public boolean intersectRects(float x, float y, Item items[]) {
-		for (Item i : items)
+	public boolean intersectRects(float x, float y, Sprite items[]) {
+		for (Sprite i : items)
 			if (i != null) {
 				RectF rectNew = new RectF(x, y, x + SIZE, y + SIZE);
 				if (rectNew.intersect(i.getX(), i.getY(), i.getX() + SIZE,
@@ -251,16 +251,16 @@ for (int i = 0; i < SIZE; i++)
 
 				else {
 					if (r[i][j] == 1) {
-						on = Court.isOn(xInt + i + dx - SIZEH, yInt + j + dy
+						on = Scene.isOn(xInt + i + dx - SIZEH, yInt + j + dy
 								- SIZEH);
 						if (on) {
-							IAngle.sin = Court.getSin();
-							IAngle.cos = Court.getCos();
+							IAngle.sin = Scene.getSin();
+							IAngle.cos = Scene.getCos();
 
 							return true;
 						}
 						
-						for (Item t : items) {
+						for (Sprite t : Scene.getSprites()) {
 							if (t != null && t != this) {
 								on = t.isOn(xInt + i + dx, yInt + j + dy);
 								if (on) {
@@ -313,8 +313,8 @@ for (int i = 0; i < SIZE; i++)
 			xInt = xInt + dx;
 			yInt = yInt + dy;
 
-			vx = (float) (vx + Court.getAccelerationX());
-			vy = (float) (vy + Court.getAccelerationY());
+			vx = (float) (vx + Scene.getAccelerationX());
+			vy = (float) (vy + Scene.getAccelerationY());
 
 			Log.d("","* "+vy);
 			
@@ -349,8 +349,8 @@ for (int i = 0; i < SIZE; i++)
 			}
 
 			
-			vx = (float) (vx + Court.getAccelerationX());
-			vy = (float) (vy + Court.getAccelerationY());
+			vx = (float) (vx + Scene.getAccelerationX());
+			vy = (float) (vy + Scene.getAccelerationY());
 
 			//Log.d("",""+nSpeed+"  vx "+vx+"  vy "+vy);
 			Log.d("","x "+x+" y "+y);
@@ -370,9 +370,6 @@ for (int i = 0; i < SIZE; i++)
 		Paint paint = new Paint();
 		paint.setColor(Color.WHITE);
 
-		int left = Court.getLeft();
-		int top = Court.getTop();
-		int k = Court.getK();
 		/*
 		 * paint.setColor(Color.YELLOW); canvas.drawRect(0 * k + left + (x -
 		 * SIZEH) * k, 0 * k + top + (y - SIZEH) * k, SIZE * k + left + (x -
@@ -380,12 +377,12 @@ for (int i = 0; i < SIZE; i++)
 		 */
 		canvas.save();
 		canvas.rotate(-angle,
-				  (int)(left+(x)*k), (int)(top+(y)*k));
+				  (int)(x), (int)(y));
 		
 		canvas.drawBitmap(chip, 
 		new Rect(0,0,chip.getWidth(),chip.getHeight()),
-		new Rect((int)(left+(x-SIZEH)*k), (int)(top+(y-SIZEH)*k),
-			(int)(left+(x+SIZEH)*k), (int)(top+(y+SIZEH)*k)),
+		new Rect((int)((x-SIZEH)), (int)((y-SIZEH)),
+			(int)((x+SIZEH)), (int)((y+SIZEH))),
 		paint
 		);
 		

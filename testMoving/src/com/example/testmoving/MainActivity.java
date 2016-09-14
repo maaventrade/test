@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
@@ -27,24 +28,18 @@ public class MainActivity extends Activity implements SensorEventListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		if (android.os.Build.VERSION.SDK_INT >= 11)
+			getActionBar().hide();
 		
 		surfaceViewScreen = (MySurfaceView)findViewById(R.id.mySurfaceView);
-		
-		Button button = (Button)findViewById(R.id.button1);
-		button.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				//surfaceViewScreen.init();
-				//surfaceViewScreen.start();
-			}});
 		
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); 
 		sensorManager.registerListener(this, 
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 
 				SensorManager.SENSOR_DELAY_NORMAL); //SENSOR_DELAY_GAME 
 		surfaceViewScreen.start();
-		
 	} 
 
 	@Override

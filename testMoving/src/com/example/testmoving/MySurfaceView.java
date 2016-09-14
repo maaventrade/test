@@ -1,5 +1,7 @@
 package com.example.testmoving;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,8 +15,6 @@ import android.view.SurfaceView;
 import android.os.*;
 
 public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callback {
-	private Item[] mItems;
-	
 	Context mContext;
 	
 	DrawThread drawThread;
@@ -24,25 +24,7 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	private Handler handler = new Handler();
 	
 	void init() {
-		mItems = new Item[7];
-
-		Court.init(0, 0, 2);
-		
-		int x = -25;
-		int y = -50;
-		for (int i = 0; i < 7; i++){
-			//if (i == 3)
-			mItems[i] = new Item(mContext, mItems, i, x, y);
-			x = x + 50;
-			if (i == 1){
-				x = -50;
-				y = 0;
-			} else if (i == 4){
-				x = -25;
-				y = 50;
-			}
-		}
-		
+		Scene.init(mContext);
 		getHolder().addCallback(this);
 	}
 	
@@ -52,9 +34,7 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 
 	private Runnable updateTimeTask = new Runnable() { 
 		public void run() { 
-			for (Item i : mItems)
-				if (i != null)
-					i.calc();
+			Scene.calc();
 			handler.postDelayed(this, 5);
 		} 
 	};        
@@ -77,13 +57,7 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 		
 		canvas.drawColor(Color.BLUE);
 		
-		Court.draw(canvas);
-		
-		synchronized (mItems) {
-			for (Item i : mItems)
-				if (i != null)
-					i.draw(canvas);
-		}
+		Scene.draw(canvas);
 		
 	}
 
@@ -116,18 +90,6 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 		drawThread = null;
 		
 		retry = true;
-		// finish the thread wirking
-		/*calcThread.setRunnable(false);
-		while (retry) {
-			try {
-				calcThread.join();
-				retry = false;
-			} catch (InterruptedException e) {
-				// try again ang again
-			}
-		}
-		calcThread = null;
-		*/
 	}
 
 	@Override
@@ -136,7 +98,7 @@ public class MySurfaceView extends SurfaceView  implements SurfaceHolder.Callbac
 	}
 
 	public void setAcceleration(double gx, double gy) {
-		Court.setAcceleration(gx, gy);
+		Scene.setAcceleration(gx, gy);
 		//for (Item i : mItems)
 		//	if (i != null)
 		//		i.setVelocity(gx / 10, gy / 10);

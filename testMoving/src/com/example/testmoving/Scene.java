@@ -1,21 +1,18 @@
 package com.example.testmoving;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.*;
 import android.util.*;
 
-public class Court {
+public class Scene {
+    static ArrayList<Sprite> objects;
+	
 	private static int rect[][];
 	
 	private static final int SIZE = 200;
 	private static int SIZEH = 100;
-	
-	private static int sizeX = SIZE;
-	private static int sizeY = SIZE;
-	
-	private static int left = 0;
-	private static int top = 0;
-	private static int k = 2;
 	
 	private static int yCol = -1;
 	private static int xCol = -1;
@@ -29,32 +26,14 @@ public class Court {
 		mGy = (float) gy / 100;
 	}
 
-	public static int getLeft()
-	{
-		return left;
-	}
-
-	public static int getTop()
-	{
-		return top;
-	}
-
-	public static int getK()
-	{
-		return k;
-	}
-	
 	public static int getRadius()
 	{
 		return SIZE / 2;
 	}
 	
-	public static void init(int pleft, int ptop, int pk){
-		left = pleft;
-		top = ptop;
-		k = pk;
+	public static void init(Context context){
 		
-		rect = new int[sizeX][sizeY];
+		rect = new int[SIZE][SIZE];
 		
 		for (int i = 0; i< SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
@@ -62,11 +41,33 @@ public class Court {
 					rect[i][j] = 1;
 				else 
 					rect[i][j] = 0;
+		
+		
+	    objects = new ArrayList<Sprite>();
+		int x = -25;
+		int y = -50;
+		for (int i = 0; i < 7; i++){
+			//if (i == 3)
+			objects.add(new Sprite(context, i, x, y));
+			x = x + 50;
+			if (i == 1){
+				x = -50;
+				y = 0;
+			} else if (i == 4){
+				x = -25;
+				y = 50;
+			}
+		}
+		
 	}
 	
 	public static void draw(Canvas canvas) {
 		Paint paint = new Paint();
 		paint.setColor(Color.YELLOW);
+		
+		canvas.drawCircle(SIZEH, SIZEH, SIZEH, paint);
+		
+		/*
 		
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
@@ -80,12 +81,17 @@ public class Court {
 		paint.setTextSize(25);
 		canvas.drawText(""+mGx, left, top, paint);
 		canvas.drawText(""+mGy, left, top+35, paint);
-		
+		*/
+		synchronized (objects) {
+			for (Sprite i : objects)
+				if (i != null)
+					i.draw(canvas);
+		}
 	}
 
 	public static boolean isOn(int x, int y) {
-		if  (x >= 0 && x < sizeX && y >= 0
-				&& y < sizeY && rect[x][y] == 1){
+		if  (x >= 0 && x < SIZE && y >= 0
+				&& y < SIZE && rect[x][y] == 1){
 			yCol = y;
 			xCol = x;
 			return true;
@@ -111,6 +117,16 @@ public class Court {
 	public static float getAccelerationY() {
 		// TODO Auto-generated method stub
 		return mGy;
+	}
+
+	public static void calc() {
+		for (Sprite i : objects)
+			if (i != null)
+				i.calc();
+	}
+
+	public static ArrayList<Sprite> getSprites() {
+		return objects;
 	}
 
 	
