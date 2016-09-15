@@ -139,8 +139,8 @@ public class Sprite {
 			//int r = (int) (m * Court.getRadius() - Math.hypot(SIZE, SIZE));
 			//int angle = (int) (m1 * Math.toRadians(360));
 
-			x = Scene.getRadius() + dx;
-			y = Scene.getRadius() + dy;
+			x = Scene.getRadius();
+			y = Scene.getRadius();
 			//x = (float) (r * Math.cos(angle) + Court.getRadius());
 			//y = (float) (r * Math.sin(angle) + Court.getRadius());
 			/*
@@ -259,7 +259,7 @@ for (int i = 0; i < SIZE; i++)
 
 							return true;
 						}
-						
+						/*
 						for (Sprite t : Scene.getSprites()) {
 							if (t != null && t != this) {
 								on = t.isOn(xInt + i + dx, yInt + j + dy);
@@ -272,7 +272,7 @@ for (int i = 0; i < SIZE; i++)
 								}
 							}
 						}
-						
+						*/
 					}
 					if (on)
 						return true;
@@ -369,6 +369,8 @@ for (int i = 0; i < SIZE; i++)
 	public void draw(Canvas canvas) {
 		Paint paint = new Paint();
 		paint.setColor(Color.WHITE);
+		
+		int k = Scene.k;
 
 		/*
 		 * paint.setColor(Color.YELLOW); canvas.drawRect(0 * k + left + (x -
@@ -378,11 +380,11 @@ for (int i = 0; i < SIZE; i++)
 		canvas.save();
 		canvas.rotate(-angle,
 				  (int)(x), (int)(y));
-		
+		*
 		canvas.drawBitmap(chip, 
 		new Rect(0,0,chip.getWidth(),chip.getHeight()),
-		new Rect((int)((x-SIZEH)), (int)((y-SIZEH)),
-			(int)((x+SIZEH)), (int)((y+SIZEH))),
+		new Rect((int)((x-SIZEH*k)), (int)((y-SIZEH*k)),
+			(int)((x+SIZEH*k)), (int)((y+SIZEH*k))),
 		paint
 		);
 		

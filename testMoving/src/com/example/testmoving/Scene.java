@@ -11,19 +11,21 @@ public class Scene {
 	
 	private static int rect[][];
 	
-	private static final int SIZE = 200;
-	private static int SIZEH = 100;
+	private static final int SIZE = 100;
+	private static int SIZEH = 50;
 	
 	private static int yCol = -1;
 	private static int xCol = -1;
 	
 	private static float mGx = 0;
 	private static float mGy = 0;
+	
+	public static int k = 4;
 
 	public static void setAcceleration(double gx, double gy)
 	{
-		mGx = (float) gx / 100;
-		mGy = (float) gy / 100;
+		mGx = (float) gx / 10;
+		mGy = (float) gy / 10;
 	}
 
 	public static int getRadius()
@@ -65,7 +67,7 @@ public class Scene {
 		Paint paint = new Paint();
 		paint.setColor(Color.YELLOW);
 		
-		canvas.drawCircle(SIZEH, SIZEH, SIZEH, paint);
+		canvas.drawCircle(SIZEH*k, SIZEH*k, SIZEH*k, paint);
 		
 		/*
 		
