@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.*;
+import android.graphics.PorterDuff.Mode;
 import android.util.*;
 
 public class Scene {
@@ -64,26 +65,27 @@ public class Scene {
 	}
 	
 	public static void draw(Canvas canvas) {
+		canvas.drawColor(Color.TRANSPARENT,Mode.CLEAR);		
+/*		
 		Paint paint = new Paint();
 		paint.setColor(Color.YELLOW);
+		paint.setStyle(Paint.Style.STROKE);
 		
 		canvas.drawCircle(SIZEH*k, SIZEH*k, SIZEH*k, paint);
-		
-		/*
 		
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
 				if (rect[i][j] == 1)
-					canvas.drawPoint(i*k + left, j*k + top, paint);
+					canvas.drawPoint(i*k + 0, j*k + 0, paint);
 		
-		canvas.drawLine(left, top, left + SIZE * k, top + SIZE * k, paint);
-		canvas.drawLine(left, top + SIZE * k, left + SIZE * k, top, paint);
+		canvas.drawLine(0, 0, 0 + SIZE * k, 0 + SIZE * k, paint);
+		canvas.drawLine(0, 0 + SIZE * k, 0 + SIZE * k, 0, paint);
 		
 		paint.setColor(Color.RED);
 		paint.setTextSize(25);
-		canvas.drawText(""+mGx, left, top, paint);
-		canvas.drawText(""+mGy, left, top+35, paint);
-		*/
+		canvas.drawText(""+mGx, 0, 0, paint);
+		canvas.drawText(""+mGy, 0, 0+35, paint);
+*/		
 		synchronized (objects) {
 			for (Sprite i : objects)
 				if (i != null)

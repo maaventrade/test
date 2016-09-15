@@ -69,8 +69,8 @@ public class Sprite {
 	}
 
 	public Sprite(Context context, int pindex, int dx, int dy) {
-		SIZE = (int) (Math.random() * 20 + 30);
-		//SIZE = 50;
+		SIZE = (int) (Math.random() * 40 + 10);
+		//SIZE = 25;
 		if (SIZE % 2 == 0)
 			SIZE = SIZE + 1;
 		SIZEH = SIZE / 2;
@@ -321,6 +321,8 @@ for (int i = 0; i < SIZE; i++)
 			nX = 0;
 			nY = 0;
 			
+			vRot = vRot / 2;
+			
 		} else {
 
 			float nSpeed = vx * IAngle.cos - vy * IAngle.sin;
@@ -338,14 +340,14 @@ for (int i = 0; i < SIZE; i++)
 				nX = 0;
 			} else {
 				vx = (tSpeed * IAngle.sin + nSpeed * IAngle.cos) / 2;
-				vRot = vRot + 0.3f * nSpeed;
+				vRot = vRot + 0.1f * nSpeed;
 			}
 			
 			if (nY > 3){
 				nY = 0;
 			} else {
 				vy = (tSpeed * IAngle.cos - nSpeed * IAngle.sin) / 2;
-				vRot = vRot + 0.3f * nSpeed;
+				vRot = vRot + 0.1f * nSpeed;
 			}
 
 			
@@ -379,12 +381,12 @@ for (int i = 0; i < SIZE; i++)
 		 */
 		canvas.save();
 		canvas.rotate(-angle,
-				  (int)(x), (int)(y));
-		*
+				  (int)(x*k), (int)(y*k));
+		
 		canvas.drawBitmap(chip, 
 		new Rect(0,0,chip.getWidth(),chip.getHeight()),
-		new Rect((int)((x-SIZEH*k)), (int)((y-SIZEH*k)),
-			(int)((x+SIZEH*k)), (int)((y+SIZEH*k))),
+		new Rect((int)((x-SIZEH)*k), (int)((y-SIZEH)*k),
+			(int)((x+SIZEH)*k), (int)((y+SIZEH)*k)),
 		paint
 		);
 		
